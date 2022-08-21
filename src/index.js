@@ -1,15 +1,24 @@
 import './css/styles.css';
-import { fetchCountries } from '../fetchcountries';
+import { fetchCountries } from '../fetchCountries';
 import Notiflix from 'notiflix';
 import { debounce } from 'lodash';
 
-const query = selector => document.querySelector(selector);
+const qs = selector => document.querySelector(selector);
 
-const searchBox = query('#search-box');
-const countryList = query('.country-list');
-const countryInfo = query('.country-info');
+const searchBox = qs('#search-box');
+const countryList = qs('.country-list');
+const countryInfo = qs('.country-info');
 
 const DEBOUNCE_DELAY = 300;
+
+const searchBoxValue = () => {
+  fetchCountries(searchBox.value.trim())
+    .then(countries => {
+      console.log(countries);
+      renderCountriesList(countries);
+    })
+    .catch(err => console.log(err));
+};
 
 Notiflix.Notify.info('Please type in correct country.');
 
