@@ -1,4 +1,4 @@
-export function fetchCountries(name) {
+const fetchCountries = name => {
     const API = `https://restcountries.com/v3.1/name/${name}?fields=name,capital,population,languages,flags`;
 
     return fetch(API).then((response) => {
@@ -10,3 +10,4 @@ export function fetchCountries(name) {
         })
     .catch(error => console.log(error));
 }
+export { fetchCountries };
