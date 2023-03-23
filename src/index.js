@@ -18,29 +18,35 @@ const searchBoxValue = () => {
             console.log(countries);
             renderCountriesList(countries);
         })
-        .catch((error) => console.log(error));
+        .catch(error => console.log(error));
 };
 
-const renderCountriesList = (countries) => {
-    
+const renderCountriesList = countries => {
     if (countries.length > 10) {
-        Notiflix.Notify.info('Too many matches found. Please enter a more specific name.');
+        Notiflix.Notify.info('Too many matches, please enter more characters.');
         listReset();
-    } else if (countries.length > 10 && countries.length >= 2) {
+    } else if (countries.length <= 10 && countries.length >= 2) {
+    listReset();
 
-    countries.map(({ name, flags }) => {
-    const liItem = `
-        <li class="country-list_item">
-            <img src="${flags.svg}" alt="country flag" class="flags-mini_img">
-            <p class="country-list_name">${name}</p>
-        </li>
-    `;
-    return liItem;
-    });
+    const liItem = countries.map(({ name, flags }) => 
+    `<li class="country-list_item">
+        <img src="${flags.svg}" alt="country flag" class="flags-mini_img">
+        <p class="country-list_name">${name}</p>
+    </li>`).join("");
+
+    countryList.insertAdjacentHTML("beforeend", liItem);
 
     } else if (countries.length === 1) {
         listReset();
 
+        const finalCountry = countries.map(({ name, flags, capital, population, languages }) => {
+        return `<h1 class="country-info_name"><img src="${flags.svg}" class="flags-big_img"/>${name}</h1>
+            <p class="country-info_item"><span>Capital: </span> ${capital} </p>
+            <p class="country-info_item"><span>Population: </span> ${population} </p>
+            <p class="country-info_item"><span>Languages: </span> 
+            <ul>${languages.map(lang => `<li>${lang.name}</li>`).join('')}</ul></p>`;
+        });
+        countryInfo.innerHTML = finalCountry;
 
     } else if (countries.length < 1) {
         Notiflix.Notify.info('Please type correct country.');

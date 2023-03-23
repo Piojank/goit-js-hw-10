@@ -1,5 +1,5 @@
 export function fetchCountries(name) {
-    const API = `https://restcountries.com/v3.1/name/${name}?fields=name,capital,population,flags,languages`;
+    const API = `https://restcountries.com/v3.1/name/${name}?fields=name,capital,population,languages,flags`;
 
     return fetch(API).then((response) => {
         if (!response.ok) {
