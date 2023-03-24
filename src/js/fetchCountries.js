@@ -1,5 +1,5 @@
-const fetchCountries = name => {
-    const API = `https://restcountries.com/v3.1/name/${name}?fields=name,capital,population,languages,flags`;
+export function fetchCountries(countryName) {
+    const API = `https://restcountries.com/v3.1/name/${countryName}?fields=name,capital,population,languages,flags`;
 
     return fetch(API).then((response) => {
         if (!response.ok) {
@@ -9,5 +9,4 @@ const fetchCountries = name => {
             return response.json();
         })
     .catch(error => console.log(error));
-}
-export { fetchCountries };
+};

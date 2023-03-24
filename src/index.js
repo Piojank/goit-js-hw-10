@@ -1,7 +1,7 @@
 import './css/styles.css';
 import Notiflix from 'notiflix';
 import { fetchCountries } from './js/fetchCountries';
-let debounce = require('lodash.debounce');
+import debounce from 'lodash.debounce';
 
 const DEBOUNCE_DELAY = 300;
 
@@ -12,51 +12,65 @@ const countryInfo = qs('.country-info');
 
 Notiflix.Notify.info('Please type in correct country.');
 
-const searchBoxValue = () => {
-    fetchCountries(searchBox.value.trim())
-        .then((countries) => {
+// Handle input event
+const handleInput = event => {
+    const countryName = event.target.value.trim();
+
+    clearMarkup();
+    if (countryName.length === 0) return;
+
+    fetchCountries(countryName)
+        .then(countries => {
             console.log(countries);
-            renderCountriesList(countries);
+            if (countries.length > 10) {
+                Notiflix.Notify.info('Too many matches, please enter more characters.');
+            } else if (countries.length <= 10 && countries.length >= 2) {
+                renderList(countries);
+            } else {
+                renderCountryInfo(countries);
+            }
         })
-        .catch(error => console.log(error));
+        .catch(error => Notiflix.Notify.failure("Oops, there is no country with that name"));
+}
+
+// Render countries list
+const renderList = countries => {
+    const liItem = countries.map(({ name, flags }) => {
+
+    return `<li style="display:flex; align-items:center; gap:10px">
+                <img src="${flags.svg}" alt="${flags.alt}" width=35 height=25 />
+                <p>${name.official}</p>
+            </li>`;
+    }).join("");
+
+    countryList.innerHTML = liItem;
 };
 
-const renderCountriesList = countries => {
-    if (countries.length > 10) {
-        Notiflix.Notify.info('Too many matches, please enter more characters.');
-        listReset();
-    } else if (countries.length <= 10 && countries.length >= 2) {
-    listReset();
+// Render country info
+const renderCountryInfo = (countries) => {
+    if (countries.length > 0) {
+        const languagesArray = Object.values(countries[0].languages);
 
-    const liItem = countries.map(({ name, flags }) => 
-    `<li class="country-list_item">
-        <img src="${flags.svg}" alt="country flag" class="flags-mini_img">
-        <p class="country-list_name">${name}</p>
-    </li>`).join("");
+        const finalCountry = countries.map(({ name, flags, capital, population }) => {
+        return `<div>
+            <div style="display:flex; align-items:center; gap:10px; height:50px">
+                <img src="${flags.svg}" alt="${flags.alt}" width=35 height=25 />
+                <p style="font-size:24px; font-weight:bold; color:black">${name.official}</p>
+            </div>
+            <p><b>Capital</b>: ${capital}</p>
+            <p><b>Population</b>: ${population}</p>
+            <p><b>Languages</b>: ${languagesArray}</p>
+            </div>`;
+        }).join("");
 
-    countryList.insertAdjacentHTML("beforeend", liItem);
-
-    } else if (countries.length === 1) {
-        listReset();
-
-        const finalCountry = countries.map(({ name, flags, capital, population, languages }) => {
-        return `<h1 class="country-info_name"><img src="${flags.svg}" class="flags-big_img"/>${name}</h1>
-            <p class="country-info_item"><span>Capital: </span> ${capital} </p>
-            <p class="country-info_item"><span>Population: </span> ${population} </p>
-            <p class="country-info_item"><span>Languages: </span> 
-            <ul>${languages.map(lang => `<li>${lang.name}</li>`).join('')}</ul></p>`;
-        });
         countryInfo.innerHTML = finalCountry;
-
-    } else if (countries.length < 1) {
-        Notiflix.Notify.info('Please type correct country.');
     }
 };
 
-const listReset = () => {
-    countryList.innerHTML = '';
-    countryInfo.innerHTML = '';
+// List reset
+const clearMarkup = () => {
+    countryList.innerHTML = "";
+    countryInfo.innerHTML = "";
 };
 
-searchBox.addEventListener("input", debounce(searchBoxValue, DEBOUNCE_DELAY));
-
+searchBox.addEventListener('input', debounce(handleInput, DEBOUNCE_DELAY));
