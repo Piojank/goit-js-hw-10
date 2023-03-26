@@ -73,4 +73,5 @@ const clearMarkup = () => {
     countryInfo.innerHTML = "";
 };
 
+// Input listener
 searchBox.addEventListener('input', debounce(handleInput, DEBOUNCE_DELAY));
