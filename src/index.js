@@ -38,7 +38,7 @@ const handleInput = event => {
 const renderList = countries => {
     const liItem = countries.map(({ name, flags }) => {
 
-    return `<li style="display:flex; align-items:center; gap:10px">
+    return `<li data-country="${name.official}"style="display:flex; align-items:center; gap:10px">
                 <img src="${flags.svg}" alt="${flags.alt}" width=35 height=25 />
                 <p>${name.official}</p>
             </li>`;
@@ -47,14 +47,14 @@ const renderList = countries => {
     countryList.innerHTML = liItem;
 
     // Add click listener to each list item to get more info
-    const listItems = qs(".country-list li");
-    listItems.forEach(item => {
-        item.addEventListener("click", event => {
-            const countryName = event.currentTarget.getAttribute('data-country');
-            const country = countries.find(country => country.name.official === countryName);
-            renderCountryInfo(country);
-        })
-    })
+    // const listItems = document.querySelectorAll('.country-list li');
+    // listItems.forEach(item => {
+    //     item.addEventListener("click", event => {
+    //         const countryName = event.currentTarget.getAttribute('data-country');
+    //         const country = countries.find(country => country.name.official === countryName);
+    //         renderCountryInfo(country);
+    //     });
+    // });
 };
 
 // Render country info
