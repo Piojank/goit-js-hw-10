@@ -60,7 +60,7 @@ const renderList = countries => {
 // Render country info
 const renderCountryInfo = (countries) => {
     if (countries.length > 0) {
-        const languagesArray = Object.values(countries[0].languages);
+        const languagesArray = Object.values(countries[0].languages).join(", ");
         const populationValue = fixPopulationAmount(countries[0].population);
 
         const finalCountry = countries.map(({ name, flags, capital }) => {
