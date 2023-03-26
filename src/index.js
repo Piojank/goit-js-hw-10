@@ -45,6 +45,16 @@ const renderList = countries => {
     }).join("");
 
     countryList.innerHTML = liItem;
+
+    // Add click listener to each list item to get more info
+    const listItems = qs(".country-list li");
+    listItems.forEach(item => {
+        item.addEventListener("click", event => {
+            const countryName = event.currentTarget.getAttribute('data-country');
+            const country = countries.find(country => country.name.official === countryName);
+            renderCountryInfo(country);
+        })
+    })
 };
 
 // Render country info
