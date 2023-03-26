@@ -2,6 +2,7 @@ import './css/styles.css';
 import Notiflix from 'notiflix';
 import { fetchCountries } from './js/fetchCountries';
 import debounce from 'lodash.debounce';
+import round from 'lodash.round';
 
 const DEBOUNCE_DELAY = 300;
 
@@ -50,15 +51,16 @@ const renderList = countries => {
 const renderCountryInfo = (countries) => {
     if (countries.length > 0) {
         const languagesArray = Object.values(countries[0].languages);
+        const populationValue = fixPopulationAmount(countries[0].population);
 
-        const finalCountry = countries.map(({ name, flags, capital, population }) => {
+        const finalCountry = countries.map(({ name, flags, capital }) => {
         return `<div>
             <div style="display:flex; align-items:center; gap:10px; height:50px">
                 <img src="${flags.svg}" alt="${flags.alt}" width=35 height=25 />
                 <p style="font-size:24px; font-weight:bold; color:black">${name.official}</p>
             </div>
             <p><b>Capital</b>: ${capital}</p>
-            <p><b>Population</b>: ${population}</p>
+            <p><b>Population</b>: ${populationValue}</p>
             <p><b>Languages</b>: ${languagesArray}</p>
             </div>`;
         }).join("");
@@ -72,6 +74,19 @@ const clearMarkup = () => {
     countryList.innerHTML = "";
     countryInfo.innerHTML = "";
 };
+
+// Fix population amount
+const fixPopulationAmount = (number) => {
+    let result = 0;
+    if (number.toString().length >= 10) {
+        result = `${round(number / 1000000000, 2)} mld`;
+    } else if (number.toString().length >= 7) {
+        result = `${round(number / 1000000, 2)} mln`;
+    } else if (number.toString().length >= 4) {
+        result = `${round(number / 1000, 0)} tys.`;
+    }
+    return result;
+}
 
 // Input listener
 searchBox.addEventListener('input', debounce(handleInput, DEBOUNCE_DELAY));
